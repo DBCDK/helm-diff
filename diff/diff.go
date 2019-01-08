@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"math"
+	"regexp"
 	"strings"
 
 	"github.com/aryann/difflib"
@@ -15,38 +16,45 @@ import (
 func DiffManifests(oldIndex, newIndex map[string]*manifest.MappingResult, suppressedKinds []string, context int, to io.Writer) bool {
 	seenAnyChanges := false
 	emptyMapping := &manifest.MappingResult{}
+	changedMapping := make(map[string]bool)
 	for key, oldContent := range oldIndex {
 		if newContent, ok := newIndex[key]; ok {
-			if oldContent.Content != newContent.Content {
+			re := regexp.MustCompile("app.kubernetes.io/version: \"[0-9]+\"")
+			old := re.ReplaceAllString(oldContent.Content, "")
+			new := re.ReplaceAllString(newContent.Content, "")
+			if old != new {
 				// modified
-				fmt.Fprintf(to, ansi.Color("%s has changed:", "yellow")+"\n", key)
-				diffs := diffMappingResults(oldContent, newContent)
+				//fmt.Fprintf(to, ansi.Color("%s has changed:", "yellow")+"\n", key)
+				diffs := diffStrings(old, new)
 				if len(diffs) > 0 {
+					changedMapping[newContent.PartOf] = true
 					seenAnyChanges = true
 				}
-				printDiffRecords(suppressedKinds, oldContent.Kind, context, diffs, to)
 			}
 		} else {
 			// removed
-			fmt.Fprintf(to, ansi.Color("%s has been removed:", "yellow")+"\n", key)
+			//fmt.Fprintf(to, ansi.Color("%s has been removed:", "yellow")+"\n", key)
 			diffs := diffMappingResults(oldContent, emptyMapping)
 			if len(diffs) > 0 {
+				changedMapping[newContent.PartOf] = true
 				seenAnyChanges = true
 			}
-			printDiffRecords(suppressedKinds, oldContent.Kind, context, diffs, to)
 		}
 	}
 
 	for key, newContent := range newIndex {
 		if _, ok := oldIndex[key]; !ok {
 			// added
-			fmt.Fprintf(to, ansi.Color("%s has been added:", "yellow")+"\n", key)
+			//fmt.Fprintf(to, ansi.Color("%s has been added:", "yellow")+"\n", key)
 			diffs := diffMappingResults(emptyMapping, newContent)
 			if len(diffs) > 0 {
+				changedMapping[newContent.PartOf] = true
 				seenAnyChanges = true
 			}
-			printDiffRecords(suppressedKinds, newContent.Kind, context, diffs, to)
 		}
+	}
+	for key := range changedMapping {
+		fmt.Fprint(to, key+"\n")
 	}
 	return seenAnyChanges
 }

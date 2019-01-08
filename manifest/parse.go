@@ -14,9 +14,11 @@ import (
 var yamlSeperator = []byte("\n---\n")
 
 type MappingResult struct {
-	Name    string
-	Kind    string
-	Content string
+	Name      string
+	Kind      string
+	Content   string
+	ChartName string
+	PartOf    string
 }
 
 type metadata struct {
@@ -25,6 +27,9 @@ type metadata struct {
 	Metadata   struct {
 		Namespace string
 		Name      string
+		Labels    struct {
+			PartOf string "app.kubernetes.io/part-of"
+		}
 	}
 }
 
@@ -93,14 +98,21 @@ func Parse(manifest string, defaultNamespace string) map[string]*MappingResult {
 		if metadata.Metadata.Namespace == "" {
 			metadata.Metadata.Namespace = defaultNamespace
 		}
+		var chart = ""
+		var partOf = ""
+		if len(metadata.Metadata.Labels.PartOf) > 0 {
+			partOf = metadata.Metadata.Labels.PartOf
+		}
 		name := metadata.String()
 		if _, ok := result[name]; ok {
 			log.Printf("Error: Found duplicate key %#v in manifest", name)
 		} else {
 			result[name] = &MappingResult{
-				Name:    name,
-				Kind:    metadata.Kind,
-				Content: content,
+				Name:      name,
+				Kind:      metadata.Kind,
+				Content:   content,
+				ChartName: chart,
+				PartOf:    partOf,
 			}
 		}
 	}
