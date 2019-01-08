@@ -1,28 +1,26 @@
 # Helm Diff Plugin
 
-This is a Helm plugin giving your a preview of what a `helm upgrade` would change.
-It basically generates a diff between the latest deployed version of a release
-and a `helm upgrade --debug --dry-run`. This can also be used to compare two 
-revisions/versions of your helm release.
+This plugin prints all the different `part-of` categories of the manifests that has seen changes.
 
-<a href="https://asciinema.org/a/105326" target="_blank"><img src="https://asciinema.org/a/105326.png" /></a>
+This is practical for generating automated messages telling us which applications changed, without going into to much
+detail about network policies, deployments etc.
 
 ## Usage
 
 ```
 The Helm Diff Plugin
 
-* Shows a diff explaining what a helm upgrade would change:
+* Shows a list of 'part-of' names that helm upgrade would change:
     This fetches the currently deployed version of a release
   and compares it to a local chart plus values. This can be 
   used visualize what changes a helm upgrade will perform.
 
-* Shows a diff explaining what had changed between two revisions:
+* Shows a list of 'part-of' names of what had changed between two revisions:
     This fetches previously deployed versions of a release
   and compares them. This can be used visualize what changes 
   were made during revision change.
 
-* Shows a diff explaining what a helm rollback would change:
+* Shows a list of 'part-of' names explaining what a helm rollback would change:
     This fetches the currently deployed version of a release
   and compares it to adeployed versions of a release, that you 
   want to rollback. This can be used visualize what changes a 
@@ -33,9 +31,9 @@ Usage:
   diff [command]
 
 Available Commands:
-  revision    Shows diff between revision's manifests
-  rollback    Show a diff explaining what a helm rollback could perform
-  upgrade     Show a diff explaining what a helm upgrade would change.
+  revision    Shows a list of 'part-of' names between revision's manifests
+  rollback    Shows a list of 'part-of' names explaining what a helm rollback could perform
+  upgrade     Shows a list of 'part-of' names explaining what a helm upgrade would change.
   version     Show version of the helm diff plugin
 
 Flags:
@@ -61,7 +59,7 @@ Use "diff [command] --help" for more information about a command.
 
 ```
 $ helm diff upgrade -h
-Show a diff explaining what a helm upgrade would change.
+Shows a list of 'part-of' names explaining what a helm upgrade would change.
 
 This fetches the currently deployed version of a release
 and compares it to a chart plus values.
@@ -151,7 +149,7 @@ Global Flags:
 ### Using Helm plugin manager (> 2.3.x)
 
 ```shell
-helm plugin install https://github.com/databus23/helm-diff --version master
+helm plugin install https://github.com/DBCDK/helm-diff --version master
 ```
 
 ### Pre Helm 2.3.0 Installation

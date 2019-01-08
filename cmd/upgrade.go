@@ -32,7 +32,7 @@ type diffCmd struct {
 	outputContext    int
 }
 
-const globalUsage = `Show a diff explaining what a helm upgrade would change.
+const globalUsage = `Shows a list of 'part-of' names explaining what a helm upgrade would change.
 
 This fetches the currently deployed version of a release
 and compares it to a chart plus values.
