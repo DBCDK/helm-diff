@@ -2,7 +2,7 @@ HELM_HOME ?= $(shell helm home)
 HAS_GLIDE := $(shell command -v glide;)
 VERSION := $(shell sed -n -e 's/version:[ "]*\([^"]*\).*/\1/p' plugin.yaml)
 
-PKG:= github.com/databus23/helm-diff
+PKG:= github.com/DBCDK/helm-diff
 LDFLAGS := -X $(PKG)/cmd.Version=$(VERSION)
 
 # Clear the "unreleased" string in BuildMetadata

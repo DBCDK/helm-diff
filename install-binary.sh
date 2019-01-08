@@ -109,7 +109,7 @@ fail_trap() {
   result=$?
   if [ "$result" != "0" ]; then
     echo "Failed to install $PROJECT_NAME"
-    echo "\tFor support, go to https://github.com/databus23/helm-diff."
+    echo "\tFor support, go to https://github.com/DBCDK/helm-diff."
   fi
   exit $result
 }

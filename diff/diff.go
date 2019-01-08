@@ -10,7 +10,7 @@ import (
 	"github.com/aryann/difflib"
 	"github.com/mgutz/ansi"
 
-	"github.com/databus23/helm-diff/manifest"
+	"github.com/DBCDK/helm-diff/manifest"
 )
 
 func DiffManifests(oldIndex, newIndex map[string]*manifest.MappingResult, suppressedKinds []string, context int, to io.Writer) bool {

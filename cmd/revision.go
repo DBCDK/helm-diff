@@ -9,8 +9,8 @@ import (
 	"github.com/spf13/cobra"
 	"k8s.io/helm/pkg/helm"
 
-	"github.com/databus23/helm-diff/diff"
-	"github.com/databus23/helm-diff/manifest"
+	"github.com/DBCDK/helm-diff/diff"
+	"github.com/DBCDK/helm-diff/manifest"
 )
 
 type revision struct {
